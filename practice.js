@@ -8,6 +8,9 @@
 
   let currentItem = null;
   let totalCorrect = 0;
+  let wrongAnswerTimeoutId = null;
+  let waitingAfterWrong = false;
+  let suppressNextWaitingEnter = false;
 
   const remainingCountEl = document.getElementById('remainingCount');
   const currentStreakEl = document.getElementById('currentStreak');
@@ -26,7 +29,18 @@
     return normalizeText(answer);
   }
 
+  function clearWrongAnswerWait() {
+    waitingAfterWrong = false;
+    suppressNextWaitingEnter = false;
+    if (wrongAnswerTimeoutId !== null) {
+      clearTimeout(wrongAnswerTimeoutId);
+      wrongAnswerTimeoutId = null;
+    }
+  }
+
   function pickRandomItem() {
+    clearWrongAnswerWait();
+
     if (items.length === 0) {
       currentItem = null;
       render();
@@ -43,7 +57,7 @@
     }
   }
 
-  function checkAnswer() {
+  function checkAnswer(triggeredByEnter = false) {
     const input = document.getElementById('answerInput');
     const userAnswer = normalizeText(input.value);
 
@@ -76,7 +90,6 @@
       currentItem.streak = 0;
       showMessage('Wrong. Correct answer: ' + currentItem.answer, 'error');
       updateStats(currentItem.streak);
-      input.value = '';
       input.disabled = true;
 
       const checkButton = document.getElementById('checkButton');
@@ -84,9 +97,14 @@
       if (checkButton) checkButton.disabled = true;
       if (skipButton) skipButton.disabled = true;
 
-      setTimeout(() => {
+      waitingAfterWrong = true;
+      suppressNextWaitingEnter = triggeredByEnter;
+      wrongAnswerTimeoutId = setTimeout(() => {
+        wrongAnswerTimeoutId = null;
+        waitingAfterWrong = false;
+        suppressNextWaitingEnter = false;
         pickRandomItem();
-      }, 3000);
+      }, 4000);
     }
 
     totalCorrectEl.textContent = totalCorrect;
@@ -108,6 +126,8 @@
   }
 
   function resetApp() {
+    clearWrongAnswerWait();
+
     items = initialItems.map((item, index) => ({
       id: index + 1,
       prompt: item.prompt,
@@ -162,14 +182,27 @@
     const checkButton = document.getElementById('checkButton');
     const skipButton = document.getElementById('skipButton');
 
-    checkButton.addEventListener('click', checkAnswer);
+    checkButton.addEventListener('click', () => checkAnswer(false));
     skipButton.addEventListener('click', pickRandomItem);
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
-        checkAnswer();
+        event.preventDefault();
+        checkAnswer(true);
       }
     });
   }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' || !waitingAfterWrong) {
+      return;
+    }
+    if (suppressNextWaitingEnter) {
+      suppressNextWaitingEnter = false;
+      return;
+    }
+    event.preventDefault();
+    pickRandomItem();
+  });
 
   window.resetApp = resetApp;
 
