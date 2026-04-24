@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Irregular Verbs Practice</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <h1>Irregular Verbs Practice - v1.0</h1>
+  <p class="subtitle">Type the past simple form. A verb is removed after 2 correct answers in a row.</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Remaining verbs</div>
+      <div class="stat-value" id="remainingCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Current streak</div>
+      <div class="stat-value" id="currentStreak">0 / 2</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Correct in total</div>
+      <div class="stat-value" id="totalCorrect">0</div>
+    </div>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <div class="verbs-box">
+    <h2>Remaining verbs</h2>
+    <div class="verbs-list" id="verbsList"></div>
+  </div>
+</div>
+
+<script>
+  const initialItems = [
+    { prompt: "be", answer: "was" },
+    { prompt: "are", answer: "were" },
+    { prompt: "can", answer: "could" },
+    { prompt: "do", answer: "did" },
+    { prompt: "drink", answer: "drank" },
+    { prompt: "eat", answer: "ate" },
+    { prompt: "give", answer: "gave" },
+    { prompt: "go", answer: "went" },
+    { prompt: "have", answer: "had" },
+    { prompt: "know", answer: "knew" },
+    { prompt: "must", answer: "had to" },
+    { prompt: "read", answer: "read" },
+    { prompt: "run", answer: "ran" },
+    { prompt: "see", answer: "saw" },
+    { prompt: "take", answer: "took" }
+  ];
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

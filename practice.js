@@ -1,0 +1,177 @@
+(function () {
+  let items = initialItems.map((item, index) => ({
+    id: index + 1,
+    prompt: item.prompt,
+    answer: item.answer,
+    streak: 0
+  }));
+
+  let currentItem = null;
+  let totalCorrect = 0;
+
+  const remainingCountEl = document.getElementById('remainingCount');
+  const currentStreakEl = document.getElementById('currentStreak');
+  const totalCorrectEl = document.getElementById('totalCorrect');
+  const quizAreaEl = document.getElementById('quizArea');
+  const verbsListEl = document.getElementById('verbsList');
+
+  function normalizeText(value) {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' ');
+  }
+
+  function acceptedAnswer(answer) {
+    return normalizeText(answer);
+  }
+
+  function pickRandomItem() {
+    if (items.length === 0) {
+      currentItem = null;
+      render();
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * items.length);
+    currentItem = items[randomIndex];
+    render();
+
+    const input = document.getElementById('answerInput');
+    if (input) {
+      input.focus();
+    }
+  }
+
+  function checkAnswer() {
+    const input = document.getElementById('answerInput');
+    const userAnswer = normalizeText(input.value);
+
+    if (!userAnswer) {
+      showMessage('Please enter an answer.', 'error');
+      return;
+    }
+
+    const validAnswer = acceptedAnswer(currentItem.answer);
+    const isCorrect = userAnswer === validAnswer;
+
+    if (isCorrect) {
+      currentItem.streak += 1;
+      totalCorrect += 1;
+
+      if (currentItem.streak >= 2) {
+        const removedItem = currentItem.prompt;
+        items = items.filter(item => item.id !== currentItem.id);
+        showMessage('Correct. "' + removedItem + '" is learned and removed from the list.', 'success');
+        updateStats(0);
+        renderVerbsList();
+        setTimeout(pickRandomItem, 700);
+        return;
+      }
+
+      showMessage('Correct. One more correct answer in a row removes this verb from the list.', 'success');
+      updateStats(currentItem.streak);
+      setTimeout(pickRandomItem, 700);
+    } else {
+      currentItem.streak = 0;
+      showMessage('Wrong. Correct answer: ' + currentItem.answer, 'error');
+      updateStats(currentItem.streak);
+      input.value = '';
+      input.disabled = true;
+
+      const checkButton = document.getElementById('checkButton');
+      const skipButton = document.getElementById('skipButton');
+      if (checkButton) checkButton.disabled = true;
+      if (skipButton) skipButton.disabled = true;
+
+      setTimeout(() => {
+        pickRandomItem();
+      }, 3000);
+    }
+
+    totalCorrectEl.textContent = totalCorrect;
+    remainingCountEl.textContent = items.length;
+    renderVerbsList();
+  }
+
+  function showMessage(text, type) {
+    const message = document.getElementById('message');
+    if (!message) return;
+    message.textContent = text;
+    message.className = 'message show ' + type;
+  }
+
+  function updateStats(streak) {
+    remainingCountEl.textContent = items.length;
+    currentStreakEl.textContent = streak + ' / 2';
+    totalCorrectEl.textContent = totalCorrect;
+  }
+
+  function resetApp() {
+    items = initialItems.map((item, index) => ({
+      id: index + 1,
+      prompt: item.prompt,
+      answer: item.answer,
+      streak: 0
+    }));
+    totalCorrect = 0;
+    currentItem = null;
+    pickRandomItem();
+  }
+
+  function renderVerbsList() {
+    verbsListEl.innerHTML = '';
+    items.forEach(item => {
+      const pill = document.createElement('div');
+      pill.className = 'pill';
+      pill.textContent = item.prompt;
+      verbsListEl.appendChild(pill);
+    });
+  }
+
+  function render() {
+    updateStats(currentItem ? currentItem.streak : 0);
+    renderVerbsList();
+
+    if (!currentItem && items.length === 0) {
+      quizAreaEl.innerHTML = `
+          <div class="completed">All selected verbs are learned.</div>
+          <div style="margin-top: 16px; text-align: center;">
+            <button onclick="resetApp()">Start again</button>
+          </div>
+        `;
+      return;
+    }
+
+    quizAreaEl.innerHTML = `
+        <div class="card">
+          <div class="prompt-label">Write the past simple for:</div>
+          <div class="verb">${currentItem.prompt}</div>
+
+          <div class="answer-row">
+            <input id="answerInput" type="text" placeholder="Type the past simple" autocomplete="off" />
+            <button id="checkButton">Check</button>
+            <button class="secondary" id="skipButton" type="button">Skip</button>
+          </div>
+
+          <div id="message" class="message"></div>
+        </div>
+      `;
+
+    const input = document.getElementById('answerInput');
+    const checkButton = document.getElementById('checkButton');
+    const skipButton = document.getElementById('skipButton');
+
+    checkButton.addEventListener('click', checkAnswer);
+    skipButton.addEventListener('click', pickRandomItem);
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        checkAnswer();
+      }
+    });
+  }
+
+  window.resetApp = resetApp;
+
+  pickRandomItem();
+})();
