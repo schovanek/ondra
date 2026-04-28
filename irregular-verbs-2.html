@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Irregular Verbs Practice - 2</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <div class="verbs-list home-nav">
+    <a class="pill" href="index.html">&#8962; Back to Home</a>
+  </div>
+  <h1>Irregular Verbs Practice – L to Z</h1>
+  <p class="subtitle">Type the past simple form. A verb is removed after 2 correct answers in a row.</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Remaining verbs</div>
+      <div class="stat-value" id="remainingCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Current streak</div>
+      <div class="stat-value" id="currentStreak">0 / 2</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Correct in total</div>
+      <div class="stat-value" id="totalCorrect">0</div>
+    </div>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <div class="verbs-box">
+    <h2>Remaining verbs</h2>
+    <div class="verbs-list" id="verbsList"></div>
+  </div>
+</div>
+
+<script>
+  const initialItems = [
+    { prompt: "learn", answer: "learnt" },
+    { prompt: "lose", answer: "lost" },
+    { prompt: "make", answer: "made" },
+    { prompt: "mean", answer: "meant" },
+    { prompt: "need to", answer: "had to" },
+    { prompt: "put", answer: "put" },
+    { prompt: "put on", answer: "put on" },
+    { prompt: "read", answer: "read" },
+    { prompt: "ride", answer: "rode" },
+    { prompt: "run", answer: "ran" },
+    { prompt: "say", answer: "said" },
+    { prompt: "see", answer: "saw" },
+    { prompt: "sing", answer: "sang" },
+    { prompt: "sit", answer: "sat" },
+    { prompt: "sleep", answer: "slept" },
+    { prompt: "spell", answer: "spelt" },
+    { prompt: "stand", answer: "stood" },
+    { prompt: "swim", answer: "swam" },
+    { prompt: "take", answer: "took" },
+    { prompt: "tell", answer: "told" },
+    { prompt: "think", answer: "thought" },
+    { prompt: "throw", answer: "threw" },
+    { prompt: "understand", answer: "understood" },
+    { prompt: "wake up", answer: "woke up" },
+    { prompt: "wear", answer: "wore" },
+    { prompt: "write", answer: "wrote" },
+  ];
+</script>
+<script src="practice.js"></script>
+</body>
+</html>
