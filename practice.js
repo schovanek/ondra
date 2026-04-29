@@ -51,6 +51,7 @@
   let items = buildRuntimeItems();
 
   let currentItem = null;
+  let lastPickedItemId = null;
   let totalCorrect = 0;
   let totalWrong = 0;
   let wrongAnswerTimeoutId = null;
@@ -94,8 +95,15 @@
       return;
     }
 
-    const randomIndex = Math.floor(Math.random() * items.length);
-    currentItem = items[randomIndex];
+    if (items.length === 1) {
+      currentItem = items[0];
+    } else {
+      const selectableItems = items.filter(item => item.id !== lastPickedItemId);
+      const pool = selectableItems.length > 0 ? selectableItems : items;
+      const randomIndex = Math.floor(Math.random() * pool.length);
+      currentItem = pool[randomIndex];
+    }
+    lastPickedItemId = currentItem.id;
     render();
 
     const input = document.getElementById('answerInput');
@@ -193,6 +201,7 @@
     clearWrongAnswerWait();
 
     items = buildRuntimeItems();
+    lastPickedItemId = null;
     totalCorrect = 0;
     totalWrong = 0;
     currentItem = null;
