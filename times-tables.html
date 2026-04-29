@@ -12,7 +12,7 @@
     <a class="pill" href="index.html">&#8962; Zpět na hlavní stránku</a>
   </div>
   <h1>Procvičování násobilky</h1>
-  <p class="subtitle">Příklad se odstraní po 2 správných odpovědích za sebou. Příklady s 1 a 10 se netrénují.</p>
+  <p class="subtitle">Příklad se odstraní po 2 správných odpovědích za sebou. Trénují se jen násobitele 2 až 9.</p>
 
   <div class="selector-box">
     <h2>Vyber násobilku (2-12)</h2>
@@ -75,6 +75,8 @@
 
   const minTable = 2;
   const maxTable = 12;
+  const minMultiplier = 2;
+  const maxMultiplier = 9;
   const excludedOperands = new Set([1, 10]);
   const defaultTables = new Set([6, 7, 8, 9]);
 
@@ -95,7 +97,7 @@
       if (excludedOperands.has(table)) {
         continue;
       }
-      for (let multiplier = minTable; multiplier <= maxTable; multiplier += 1) {
+      for (let multiplier = minMultiplier; multiplier <= maxMultiplier; multiplier += 1) {
         if (excludedOperands.has(multiplier)) {
           continue;
         }
