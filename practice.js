@@ -52,6 +52,7 @@
 
   let currentItem = null;
   let totalCorrect = 0;
+  let totalWrong = 0;
   let wrongAnswerTimeoutId = null;
   let waitingAfterWrong = false;
   let suppressNextWaitingEnter = false;
@@ -59,6 +60,8 @@
   const remainingCountEl = document.getElementById('remainingCount');
   const currentStreakEl = document.getElementById('currentStreak');
   const totalCorrectEl = document.getElementById('totalCorrect');
+  const totalCorrectBottomEl = document.getElementById('totalCorrectBottom');
+  const totalWrongEl = document.getElementById('totalWrong');
   const quizAreaEl = document.getElementById('quizArea');
   const verbsListEl = document.getElementById('verbsList');
 
@@ -135,6 +138,7 @@
       setTimeout(pickRandomItem, 700);
     } else {
       currentItem.streak = 0;
+      totalWrong += 1;
       showMessage(
         formatMessage(config.wrongAnswerMessage, { answer: currentItem.answer }),
         'error'
@@ -157,8 +161,6 @@
       }, 4000);
     }
 
-    totalCorrectEl.textContent = totalCorrect;
-    remainingCountEl.textContent = items.length;
     renderVerbsList();
   }
 
@@ -170,9 +172,21 @@
   }
 
   function updateStats(streak) {
-    remainingCountEl.textContent = items.length;
-    currentStreakEl.textContent = formatMessage(config.streakFormat, { streak });
-    totalCorrectEl.textContent = totalCorrect;
+    if (remainingCountEl) {
+      remainingCountEl.textContent = items.length;
+    }
+    if (currentStreakEl) {
+      currentStreakEl.textContent = formatMessage(config.streakFormat, { streak });
+    }
+    if (totalCorrectEl) {
+      totalCorrectEl.textContent = totalCorrect;
+    }
+    if (totalCorrectBottomEl) {
+      totalCorrectBottomEl.textContent = totalCorrect;
+    }
+    if (totalWrongEl) {
+      totalWrongEl.textContent = totalWrong;
+    }
   }
 
   function resetApp() {
@@ -180,6 +194,7 @@
 
     items = buildRuntimeItems();
     totalCorrect = 0;
+    totalWrong = 0;
     currentItem = null;
     pickRandomItem();
   }

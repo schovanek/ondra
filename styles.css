@@ -154,6 +154,22 @@ button:hover {
   padding-top: 20px;
 }
 
+.totals-box {
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.totals-box h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.totals-stats {
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 0;
+}
+
 .selector-box {
   margin-bottom: 20px;
 }
@@ -225,6 +241,10 @@ button:hover {
 
 @media (max-width: 640px) {
   .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .totals-stats {
     grid-template-columns: 1fr;
   }
 
