@@ -1,14 +1,14 @@
-# Ondra - Irregular Verbs Practice
+# Ondra - Practice Pages
 
-Simple static web app for practicing English irregular verbs (past simple).
+Simple static web app with practice pages for English irregular verbs and multiplication tables.
 
 ## What the app does
 
-- Shows one verb prompt at a time.
-- User types the past simple form and checks the answer.
-- Each verb is removed from the active set after **2 correct answers in a row**.
+- Shows one prompt at a time.
+- User types an answer and checks it.
+- Each prompt is removed from the active set after **2 correct answers in a row**.
 - Tracks:
-  - Remaining verbs
+  - Remaining items
   - Current streak for current verb (`0 / 2`, `1 / 2`)
   - Total correct answers
 
@@ -17,12 +17,13 @@ Simple static web app for practicing English irregular verbs (past simple).
 - `index.html`: home page with links to practice sets.
 - `irregular-verbs-1.html`: first verb set (`initialItems`) and shared app mount points.
 - `irregular-verbs-2.html`: second verb set (`initialItems`) and shared app mount points.
+- `times-tables.html`: multiplication training page with checkbox selection for tables 2-12.
 - `practice.js`: all quiz logic and state management.
 - `styles.css`: styling.
 
 ## How data is wired
 
-Each practice page defines:
+Verb pages define:
 
 ```js
 const initialItems = [
@@ -37,6 +38,8 @@ const initialItems = [
 - `prompt`: text shown to user.
 - `answer`: expected past simple form.
 - `streak`: consecutive correct count for that item.
+
+`times-tables.html` generates `initialItems` dynamically from selected checkboxes.
 
 ## Core app logic
 

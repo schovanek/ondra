@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Procvičování násobilky</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <div class="verbs-list home-nav">
+    <a class="pill" href="index.html">&#8962; Zpět na hlavní stránku</a>
+  </div>
+  <h1>Procvičování násobilky</h1>
+  <p class="subtitle">Příklad se odstraní po 2 správných odpovědích za sebou. Příklady s 1 a 10 se netrénují.</p>
+
+  <div class="selector-box">
+    <h2>Vyber násobilku (2-12)</h2>
+    <div class="table-selector" id="tableSelector"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Zbývající příklady</div>
+      <div class="stat-value" id="remainingCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Aktuální série</div>
+      <div class="stat-value" id="currentStreak">0 / 2</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Správně celkem</div>
+      <div class="stat-value" id="totalCorrect">0</div>
+    </div>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <div class="verbs-box">
+    <h2>Zbývající příklady</h2>
+    <div class="verbs-list" id="verbsList"></div>
+  </div>
+</div>
+
+<script>
+  let initialItems = [];
+
+  window.practiceConfig = {
+    promptLabel: 'Doplň výsledek:',
+    inputPlaceholder: 'Napiš výsledek',
+    checkButtonLabel: 'Zkontrolovat',
+    skipButtonLabel: 'Přeskočit',
+    completedMessage: 'Všechny vybrané příklady jsou naučené.',
+    restartButtonLabel: 'Začít znovu',
+    emptyAnswerMessage: 'Nejprve napiš výsledek.',
+    correctAndRemovedMessage: 'Správně. Příklad "{item}" je naučený a byl odebrán ze seznamu.',
+    correctKeepMessage: 'Správně. Ještě jedna správná odpověď v řadě a příklad se odebere.',
+    wrongAnswerMessage: 'Špatně. Správná odpověď je: {answer}',
+    streakFormat: '{streak} / 2'
+  };
+
+  const minTable = 2;
+  const maxTable = 12;
+  const excludedOperands = new Set([1, 10]);
+  const defaultTables = new Set([6, 7, 8, 9]);
+
+  function getSelectedTables() {
+    const selected = [];
+    const checkboxes = document.querySelectorAll('.times-checkbox');
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked) {
+        selected.push(Number(checkbox.value));
+      }
+    });
+    return selected;
+  }
+
+  function buildInitialItems(selectedTables) {
+    const generatedItems = [];
+    for (const table of selectedTables) {
+      if (excludedOperands.has(table)) {
+        continue;
+      }
+      for (let multiplier = minTable; multiplier <= maxTable; multiplier += 1) {
+        if (excludedOperands.has(multiplier)) {
+          continue;
+        }
+        generatedItems.push({
+          prompt: table + ' × ' + multiplier,
+          answer: String(table * multiplier)
+        });
+      }
+    }
+    return generatedItems;
+  }
+
+  function regenerateItemsAndRestart() {
+    initialItems = buildInitialItems(getSelectedTables());
+    if (typeof window.resetApp === 'function') {
+      window.resetApp();
+    }
+  }
+
+  function renderTableSelector() {
+    const container = document.getElementById('tableSelector');
+    container.innerHTML = '';
+
+    for (let table = minTable; table <= maxTable; table += 1) {
+      const label = document.createElement('label');
+      label.className = 'table-option';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'times-checkbox';
+      checkbox.value = String(table);
+      checkbox.checked = defaultTables.has(table);
+      checkbox.addEventListener('change', regenerateItemsAndRestart);
+
+      const text = document.createElement('span');
+      text.textContent = String(table);
+
+      label.appendChild(checkbox);
+      label.appendChild(text);
+      container.appendChild(label);
+    }
+  }
+
+  renderTableSelector();
+  initialItems = buildInitialItems(getSelectedTables());
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

@@ -1,10 +1,54 @@
 (function () {
-  let items = initialItems.map((item, index) => ({
-    id: index + 1,
-    prompt: item.prompt,
-    answer: item.answer,
-    streak: 0
-  }));
+  const defaultConfig = {
+    promptLabel: 'Write the past simple for:',
+    inputPlaceholder: 'Type the past simple',
+    checkButtonLabel: 'Check',
+    skipButtonLabel: 'Skip',
+    completedMessage: 'All selected verbs are learned.',
+    restartButtonLabel: 'Start again',
+    emptyAnswerMessage: 'Please enter an answer.',
+    correctAndRemovedMessage: 'Correct. "{item}" is learned and removed from the list.',
+    correctKeepMessage: 'Correct. One more correct answer in a row removes this verb from the list.',
+    wrongAnswerMessage: 'Wrong. Correct answer: {answer}',
+    streakFormat: '{streak} / 2'
+  };
+
+  const pageConfig =
+    typeof practiceConfig !== 'undefined' && practiceConfig !== null
+      ? practiceConfig
+      : {};
+
+  const config = {
+    ...defaultConfig,
+    ...pageConfig
+  };
+
+  function getInitialItems() {
+    if (typeof initialItems === 'undefined' || !Array.isArray(initialItems)) {
+      return [];
+    }
+    return initialItems;
+  }
+
+  function buildRuntimeItems() {
+    return getInitialItems().map((item, index) => ({
+      id: index + 1,
+      prompt: String(item.prompt),
+      answer: String(item.answer),
+      streak: 0
+    }));
+  }
+
+  function formatMessage(template, values) {
+    return template.replace(/\{(\w+)}/g, (match, key) => {
+      if (Object.prototype.hasOwnProperty.call(values, key)) {
+        return String(values[key]);
+      }
+      return match;
+    });
+  }
+
+  let items = buildRuntimeItems();
 
   let currentItem = null;
   let totalCorrect = 0;
@@ -62,7 +106,7 @@
     const userAnswer = normalizeText(input.value);
 
     if (!userAnswer) {
-      showMessage('Please enter an answer.', 'error');
+      showMessage(config.emptyAnswerMessage, 'error');
       return;
     }
 
@@ -76,19 +120,25 @@
       if (currentItem.streak >= 2) {
         const removedItem = currentItem.prompt;
         items = items.filter(item => item.id !== currentItem.id);
-        showMessage('Correct. "' + removedItem + '" is learned and removed from the list.', 'success');
+        showMessage(
+          formatMessage(config.correctAndRemovedMessage, { item: removedItem }),
+          'success'
+        );
         updateStats(0);
         renderVerbsList();
         setTimeout(pickRandomItem, 700);
         return;
       }
 
-      showMessage('Correct. One more correct answer in a row removes this verb from the list.', 'success');
+      showMessage(config.correctKeepMessage, 'success');
       updateStats(currentItem.streak);
       setTimeout(pickRandomItem, 700);
     } else {
       currentItem.streak = 0;
-      showMessage('Wrong. Correct answer: ' + currentItem.answer, 'error');
+      showMessage(
+        formatMessage(config.wrongAnswerMessage, { answer: currentItem.answer }),
+        'error'
+      );
       updateStats(currentItem.streak);
       input.disabled = true;
 
@@ -121,19 +171,14 @@
 
   function updateStats(streak) {
     remainingCountEl.textContent = items.length;
-    currentStreakEl.textContent = streak + ' / 2';
+    currentStreakEl.textContent = formatMessage(config.streakFormat, { streak });
     totalCorrectEl.textContent = totalCorrect;
   }
 
   function resetApp() {
     clearWrongAnswerWait();
 
-    items = initialItems.map((item, index) => ({
-      id: index + 1,
-      prompt: item.prompt,
-      answer: item.answer,
-      streak: 0
-    }));
+    items = buildRuntimeItems();
     totalCorrect = 0;
     currentItem = null;
     pickRandomItem();
@@ -155,9 +200,9 @@
 
     if (!currentItem && items.length === 0) {
       quizAreaEl.innerHTML = `
-          <div class="completed">All selected verbs are learned.</div>
+          <div class="completed">${config.completedMessage}</div>
           <div style="margin-top: 16px; text-align: center;">
-            <button onclick="resetApp()">Start again</button>
+            <button onclick="resetApp()">${config.restartButtonLabel}</button>
           </div>
         `;
       return;
@@ -165,13 +210,13 @@
 
     quizAreaEl.innerHTML = `
         <div class="card">
-          <div class="prompt-label">Write the past simple for:</div>
+          <div class="prompt-label">${config.promptLabel}</div>
           <div class="verb">${currentItem.prompt}</div>
 
           <div class="answer-row">
-            <input id="answerInput" type="text" placeholder="Type the past simple" autocomplete="off" />
-            <button id="checkButton">Check</button>
-            <button class="secondary" id="skipButton" type="button">Skip</button>
+            <input id="answerInput" type="text" placeholder="${config.inputPlaceholder}" autocomplete="off" />
+            <button id="checkButton">${config.checkButtonLabel}</button>
+            <button class="secondary" id="skipButton" type="button">${config.skipButtonLabel}</button>
           </div>
 
           <div id="message" class="message"></div>
