@@ -7,8 +7,8 @@
     completedMessage: 'All selected verbs are learned.',
     restartButtonLabel: 'Start again',
     emptyAnswerMessage: 'Please enter an answer.',
-    correctAndRemovedMessage: 'Correct. "{item}" is learned and removed from the list.',
-    correctKeepMessage: 'Correct. One more correct answer in a row removes this verb from the list.',
+    correctAndRemovedMessage: 'REMOVED. "{item}" is learned and removed from the list.',
+    correctKeepMessage: 'CORRECT. One more correct answer in a row removes this verb from the list.',
     wrongAnswerMessage: 'Wrong. Correct answer: {answer}',
     streakFormat: '{streak} / 2'
   };
@@ -137,13 +137,13 @@
         );
         updateStats(0);
         renderVerbsList();
-        setTimeout(pickRandomItem, 700);
+        setTimeout(pickRandomItem, 1000);
         return;
       }
 
       showMessage(config.correctKeepMessage, 'success');
       updateStats(currentItem.streak);
-      setTimeout(pickRandomItem, 700);
+      setTimeout(pickRandomItem, 1000);
     } else {
       currentItem.streak = 0;
       totalWrong += 1;

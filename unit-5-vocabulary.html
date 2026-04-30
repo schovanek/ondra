@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit 5 Vocabulary Practice</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <div class="verbs-list home-nav">
+    <a class="pill" href="index.html">&#8962; Back to Home</a>
+  </div>
+  <h1>Unit 5 Vocabulary Practice</h1>
+  <p class="subtitle">Type the English word. An item is removed after 2 correct answers in a row.</p>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Remaining words</div>
+      <div class="stat-value" id="remainingCount">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Current streak</div>
+      <div class="stat-value" id="currentStreak">0 / 2</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Correct in total</div>
+      <div class="stat-value" id="totalCorrect">0</div>
+    </div>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <div class="verbs-box">
+    <h2>Remaining words</h2>
+    <div class="verbs-list" id="verbsList"></div>
+  </div>
+
+  <div class="totals-box">
+    <h2>Statistics</h2>
+    <div class="stats totals-stats">
+      <div class="stat">
+        <div class="stat-label">Correct in total</div>
+        <div class="stat-value" id="totalCorrectBottom">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Wrong in total</div>
+        <div class="stat-value" id="totalWrong">0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const practiceConfig = {
+    promptLabel: "Write the English for:",
+    inputPlaceholder: "Type the English word",
+    completedMessage: "All selected words are learned."
+  };
+
+  const initialItems = [
+    { prompt: "Antarktida", answer: "Antarctica" },
+    { prompt: "výtvarná výchova", answer: "art" },
+    { prompt: "netopýr", answer: "bat" },
+    { prompt: "být v práci", answer: "be at work" },
+    { prompt: "nudný", answer: "boring" },
+    { prompt: "světadíl", answer: "continent" },
+    { prompt: "překročit", answer: "cross" },
+    { prompt: "obtížný", answer: "difficult" },
+    { prompt: "delfín", answer: "dolphin" },
+    { prompt: "suchý", answer: "dry" },
+    { prompt: "Země", answer: "Earth" },
+    { prompt: "slon", answer: "elephant" },
+    { prompt: "ohrožený", answer: "endangered" },
+    { prompt: "vzrušující", answer: "exciting" },
+    { prompt: "expedice", answer: "expedition" },
+    { prompt: "badatel", answer: "explorer" },
+    { prompt: "slavný", answer: "famous" },
+    { prompt: "zašpinit se", answer: "get dirty" },
+    { prompt: "koza", answer: "goat" },
+    { prompt: "biotop", answer: "habitat" },
+    { prompt: "její", answer: "hers" },
+    { prompt: "led", answer: "ice" },
+    { prompt: "zajímavý", answer: "interesting" },
+    { prompt: "klokan", answer: "kangaroo" },
+    { prompt: "starat se", answer: "look after" },
+    { prompt: "ztratit", answer: "loose" },
+    { prompt: "muzeum", answer: "museum" },
+    { prompt: "panda", answer: "panda" },
+    { prompt: "tučňák", answer: "penguin" },
+    { prompt: "lední medvěd", answer: "polar bear" },
+    { prompt: "chránit", answer: "protect" },
+    { prompt: "veřejná doprava", answer: "public transport" },
+    { prompt: "tuleň", answer: "seal" },
+    { prompt: "loď", answer: "ship" },
+    { prompt: "školní výlet", answer: "school trip" },
+    { prompt: "sibiřský tygr", answer: "siberian tiger" },
+    { prompt: "procházet se", answer: "walk round" },
+    { prompt: "slabý", answer: "weak" },
+    { prompt: "velryba", answer: "whale" },
+  ];
+</script>
+<script src="practice.js"></script>
+</body>
+</html>
