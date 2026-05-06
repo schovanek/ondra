@@ -57,6 +57,7 @@
   let wrongAnswerTimeoutId = null;
   let waitingAfterWrong = false;
   let suppressNextWaitingEnter = false;
+  let answerSubmissionLocked = false;
 
   const remainingCountEl = document.getElementById('remainingCount');
   const currentStreakEl = document.getElementById('currentStreak');
@@ -88,6 +89,7 @@
 
   function pickRandomItem() {
     clearWrongAnswerWait();
+    answerSubmissionLocked = false;
 
     if (items.length === 0) {
       currentItem = null;
@@ -113,13 +115,27 @@
   }
 
   function checkAnswer(triggeredByEnter = false) {
+    if (answerSubmissionLocked || waitingAfterWrong || !currentItem) {
+      return;
+    }
+
     const input = document.getElementById('answerInput');
+    if (!input) {
+      return;
+    }
     const userAnswer = normalizeText(input.value);
 
     if (!userAnswer) {
       showMessage(config.emptyAnswerMessage, 'error');
       return;
     }
+
+    answerSubmissionLocked = true;
+    input.disabled = true;
+    const checkButton = document.getElementById('checkButton');
+    const skipButton = document.getElementById('skipButton');
+    if (checkButton) checkButton.disabled = true;
+    if (skipButton) skipButton.disabled = true;
 
     const validAnswer = acceptedAnswer(currentItem.answer);
     const isCorrect = userAnswer === validAnswer;
@@ -152,12 +168,6 @@
         'error'
       );
       updateStats(currentItem.streak);
-      input.disabled = true;
-
-      const checkButton = document.getElementById('checkButton');
-      const skipButton = document.getElementById('skipButton');
-      if (checkButton) checkButton.disabled = true;
-      if (skipButton) skipButton.disabled = true;
 
       waitingAfterWrong = true;
       suppressNextWaitingEnter = triggeredByEnter;
